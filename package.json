@@ -1,5 +1,5 @@
 {
-    "name": "cli",
+    "name": "elink",
     "version": "1.0.0",
     "description": "build desktop app from link",
     "main": "./index.js",
