@@ -1,6 +1,8 @@
 # Elink
+The command line interface tool for building desktop apps from webapps links with ease.
+
 #### Video Demo:  <https://youtu.be/lDy2sJJJxvc>
-#### Description: The command line interface for building desktop apps from webapps liks in four steps.
+
 
 ## Perequisites
 you need to have `NodeJs` version 14 and above installed.
