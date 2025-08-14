@@ -1,26 +1,140 @@
 # Elink
-The command line interface tool for building desktop apps from webapps links with ease.
 
-#### Video Demo:  <https://youtu.be/lDy2sJJJxvc>
+A command-line interface tool for building desktop apps from web app links with ease.
 
+## Prerequisites
 
-## Perequisites
-you need to have `NodeJs` version 14 and above installed.
+You need to have **Node.js** version 14 or above installed.
+
+---
 
 ## Installation
-#### npm registery: `npm install -g elink`
-#### from the code: `npm install -g .`
 
-## How to use
-After installing the cli run it with the command `elink` or `elink start` to configure the app and just start it for one time use. Or with the command `elink build` to configure the app and bunddle it as an installable package of the current platform.
+From npm registry:
 
-### The code
-We will start with `package.json` which is the file contains configuration and metadata about NodeJs applications. Like the name, the description, the license, and the entry point in this project it is `"main": "./index.js",`. Also this file since the applications is a command line we need to add the field `"bin": {"elink": "./index.js"},` which defines how the app well be called from the terminal.
+```bash
+npm install -g elink
+```
 
-The entry point of the app is `index.js` which imports some modules like `fs` modules, so we be able to deal with the *file system*. Also we import some helper functions from the `utils` folder, to ask the user the data about the app we will build, function to validate the arguments, and the most import function is the `copyTemplate` function which we will give the diroctory of a folder and it will copy all its content for us. In addition, we import functions to deal with the *paths* of the *file system*, and  and the `shell` helper utility from the package [ShelJs](https://www.npmjs.com/package/shelljs) to help us run some shell commands programmatically, the `createSpinner` function just to improve the experience by giving the user some feedback with a spinner in the terminal.
+From source code:
 
-we will call the `validate()` function first to check the cli arguments passed if any,  then the `HandleBuild` function will decide weither to build or just the desktop app.
+```bash
+npm install -g .
+```
 
-The next step is the copy the template of the desktop app shipped with cli in the working diroctory. Create the `config.json` file which will help the electron app code in `template/index.js` to pick the data in it and configure  the app based on it. After app we run some shell commands to install the packages that are predefined in `package.json` before, to make it ready for the **starting** or the **build** proccess of the desktop app.
+---
 
-Now the `copyTemplate` function coming from `utils/copyTemplate.js` it accepts two parameters, the first one is the path to the template of the desktop app, the second parameter which is the path where the user run the tool, to copy to it the template with the config file. So it will go throught the template recursively check if the data is file it will write is a file in the user's path, if it is a folder it will create it as a folder.
+## How to Use
+
+After installing the CLI, run it with:
+
+```bash
+elink
+```
+
+or
+
+```bash
+elink start
+```
+
+to configure and start the app for one-time use.
+
+Use:
+
+```bash
+elink build
+```
+
+to configure the app and bundle it as an installable package for your current platform.
+
+---
+
+## How It Works
+
+The entry point of the app is `index.js`, which:
+
+- Imports Node.js core modules like `fs` (to work with the file system) and `path` (to handle directory paths).
+- Imports helper functions from the `utils` folder:
+  - `askName()` and `askLink()` — prompt the user for the app’s name and web link.
+  - `copyTemplate()` — copies the bundled Electron template into your working directory.
+  - `validate()` — checks any arguments passed to the CLI.
+  - `printSpace()` — improves terminal readability.
+- Uses [`nanospinner`](https://www.npmjs.com/package/nanospinner) to display progress spinners during setup.
+- Uses [`shelljs`](https://www.npmjs.com/package/shelljs) to run shell commands programmatically.
+
+### Execution Flow
+
+1. **Argument Validation**  
+   `validate(args)` checks if CLI arguments are valid.
+   
+2. **Interactive Setup**  
+   Prompts the user for:
+   - **App name**  
+   - **Web app link**
+   
+3. **Template Copying**  
+   Creates an `app` directory and copies the built-in Electron app template into it.
+
+4. **Configuration Generation**  
+   Creates `app/config.json` with the user’s inputs.  
+   This config is later used by the Electron app code in `template/index.js`.
+
+5. **Dependency Installation**  
+   Installs npm packages inside the `app` directory.
+
+6. **Run Mode Selection**  
+   Based on the argument passed:
+   - `start` or no argument → Runs the app in development mode.
+   - `build` → Creates a production build, placing the installable application in `app/dist`.
+
+---
+
+## Example Workflow
+
+```bash
+elink start
+# → Prompts for app name and link
+# → Copies template into ./app
+# → Generates config.json
+# → Installs dependencies
+# → Runs npm start
+```
+
+```bash
+elink build
+# → Same steps as above
+# → Runs npm run build
+# → Installable app in ./app/dist
+```
+
+---
+
+## File Structure After Setup
+
+```
+app/
+├── config.json         # Your generated app configuration
+├── ...template files   # Copied from the bundled template
+├── node_modules/       # Installed dependencies
+└── dist/               # Output directory after build
+```
+
+---
+
+## About `copyTemplate`
+
+The `copyTemplate` function (from `utils/copyTemplate.js`) takes:
+
+1. The absolute path to the bundled Electron template.
+2. The destination path (user’s working directory).
+
+It recursively copies all files and folders from the template to the destination:
+- Files are duplicated exactly.
+- Folders are created in the target location.
+
+---
+
+## License
+
+MIT
